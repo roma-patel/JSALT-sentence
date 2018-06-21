@@ -1,6 +1,8 @@
-# Assignment 2: Text Classification & Deep Learning
+# JSALT Tutorial: Sentence Representation
 
-## Due: February 11, 2018 11:59 PM Pacific
+---
+
+### Overview
 
 This assignment consists of three notebooks:
 * [Prelude](Prelude.ipynb), introducing basic text processing for ML. No work,
@@ -10,15 +12,13 @@ This assignment consists of three notebooks:
 * [Neural Bag of Words Model](NeuralBOW.ipynb), in which you'll implement and train a Neural 
   Bag-of-Words model on the SST.
 
-This assignment builds directly on the [TensorFlow Introduction](../a1/tensorflow/tensorflow.ipynb) from Assignment 1, so be sure you're comfortable with that material before you start on the Neural BOW notebook. You may also want to review [pandas](https://pandas.pydata.org/pandas-docs/stable/index.html), which we'll be using to manage the datasets.
+This assignment builds directly on the [TensorFlow Introduction](../a1/tensorflow/tensorflow.ipynb) and [pandas](https://pandas.pydata.org/pandas-docs/stable/index.html), which we'll be using to manage the datasets.
 
-Also note that part (e) is likely the most time-consuming and difficult part of this assignment, so don't put it off until the last minute!
+---
 
-## Submission Instructions
+### Environment and Imports
 
-As with Assignment 1, please submit by running the submit script, only with `-a 2` (since this is assignment 2).
-```
-./assignment/submit.sh -u your-github-username -a 2
-```
+You can either use the environment.yml file to set up a virtual environment or install the required packages. All experiments and tests can be run inside the required notebooks.
 
-It is your responsibility to check that your work has made it to your GitHub repository in the `a2-submit` branch.  As always, a small number of points will be given in each assignment for submitting in the right place.
+---
+

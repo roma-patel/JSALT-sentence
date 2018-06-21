@@ -25,6 +25,9 @@ def embedding_layer(ids_, V, embed_dim, init_scale=0.001):
     # Approximately 2-3 lines of code.
     # Please name your embedding matrix 'W_embed', as in:
     #   W_embed_ = tf.get_variable("W_embed", ...)
+    init_ = tf.random_uniform_initializer(-init_scale, init_scale)  #--SOLUTION--
+    W_embed_ = tf.get_variable("W_embed", shape=[V, embed_dim], initializer=init_)  #--SOLUTION--
+    xs_ = tf.nn.embedding_lookup(W_embed_, ids_, name="xs")  #--SOLUTION--
 
 
 
@@ -57,6 +60,8 @@ def fully_connected_layers(h0_, hidden_dims, activation=tf.tanh,
         # Add dropout after each hidden layer (1-2 lines of code).
         if dropout_rate > 0:
             h_ = h_  # replace with dropout applied to h_
+            h_ = tf.layers.dropout(h_, rate=dropout_rate, training=is_training,  #--SOLUTION--
+                                   name=("Dropout_%d"%i))                        #--SOLUTION--
 
 
         #### END(YOUR CODE) ####
@@ -94,6 +99,11 @@ def softmax_output_layer(h_, labels_, num_classes):
         logits_ = None  # replace with (h W + b)
         # Please name your variables 'W_out' and 'b_out', as in:
         #   W_out_ = tf.get_variable("W_out", ...)
+        W_out_ = tf.get_variable("W_out", shape=[h_.shape[1], num_classes],   #--SOLUTION--
+                                 initializer=tf.random_normal_initializer())  #--SOLUTION--
+        b_out_ = tf.get_variable("b_out", shape=[num_classes],                #--SOLUTION--
+                                 initializer=tf.zeros_initializer())          #--SOLUTION--
+        logits_ = tf.add(tf.matmul(h_, W_out_), b_out_, name="logits")        #--SOLUTION--
 
 
 
@@ -106,6 +116,10 @@ def softmax_output_layer(h_, labels_, num_classes):
     with tf.name_scope("Softmax"):
         #### YOUR CODE HERE ####
         loss_ = None  # replace with mean cross-entropy loss over batch
+        per_example_loss_ = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=labels_,  #--SOLUTION--
+                                                                           logits=logits_,  #--SOLUTION--
+                                                                           name="per_example_softmax_loss")  #--SOLUTION--
+        loss_ = tf.reduce_mean(per_example_loss_, name="softmax_loss")  #--SOLUTION--
 
 
         #### END(YOUR CODE) ####
@@ -151,6 +165,7 @@ def BOW_encoder(ids_, ns_, V, embed_dim, hidden_dims, dropout_rate=0,
     with tf.variable_scope("Embedding_Layer"):
         #### YOUR CODE HERE ####
         xs_ = None  # replace with a call to embedding_layer
+        xs_ = embedding_layer(ids_, V, embed_dim)  #--SOLUTION--
         #### END(YOUR CODE) ####
 
     #### YOUR CODE HERE ####
@@ -159,12 +174,18 @@ def BOW_encoder(ids_, ns_, V, embed_dim, hidden_dims, dropout_rate=0,
     mask_ = tf.expand_dims(tf.sequence_mask(ns_, xs_.shape[1],
                                             dtype=tf.float32), -1)
     # Multiply xs_ by the mask to zero-out pad indices.
+    xs_ = xs_ * mask_  #--SOLUTION--
 
 
     # Sum embeddings: [batch_size, max_len, embed_dim] -> [batch_size, embed_dim]
+    x_ = tf.reduce_sum(xs_, axis=1, name="x")  #--SOLUTION--
 
 
     # Build a stack of fully-connected layers
+    #  h_ = fully_connected_layers(x_, hidden_dims)  #--SOLUTION--
+    h_ = fully_connected_layers(x_, hidden_dims,            #--SOLUTION--
+                                dropout_rate=dropout_rate,  #--SOLUTION--
+                                is_training=is_training)    #--SOLUTION--
 
 
     #### END(YOUR CODE) ####
